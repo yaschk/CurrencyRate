@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <div class="container index-content">
+        <div class="form-wrapper ">
+            <form method="post"> {% csrf_token %}
+                {{ form|crispy }}
+                <input type="submit" class="btn btn-success" value="Submit">
+            </form>
+
+        </div>
+
+        {% if rates_len >= 1 %}
+            <div id="currencyRateTable"></div>
+        {% endif %}
+    </div>
+{%  endblock content %}
+
+{% block scripts %}
+    <script src="https://code.highcharts.com/highcharts.src.js"></script>
+    <script>
+    Highcharts.chart('currencyRateTable', {
+
+    title: {
+        text: 'Currancy rate UAH to 1 USD'
+    },
+
+    yAxis: {
+        title: {
+            text: 'UAH value'
+        }
+    },
+    xAxis: {
+    title: {
+        text: 'Date',
+    },
+    categories: {{dates|safe}}
+    },
+    legend: {
+        layout: 'vertical',
+        align: 'right',
+        verticalAlign: 'middle'
+    },
+
+    plotOptions: {
+        series: {
+            label: {
+                connectorAllowed: false
+            },
+        }
+    },
+
+    series: [{
+        name: 'UAH value',
+        data: {{ rates }}
+    },],
+
+    responsive: {
+        rules: [{
+            condition: {
+                maxWidth: 500
+            },
+            chartOptions: {
+                legend: {
+                    layout: 'horizontal',
+                    align: 'center',
+                    verticalAlign: 'bottom'
+                }
+            }
+        }]
+    }
+
+    });
+    </script>
+{% endblock scripts %}
+
+
